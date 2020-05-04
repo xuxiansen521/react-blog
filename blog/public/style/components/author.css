@@ -19,3 +19,15 @@
     margin-left: .5rem;
     margin-right: .5rem;
 }
+
+.myname{
+    font-size: large;
+    font-weight: 600;
+    margin-bottom: .5rem;
+    margin-top: .5rem;
+}
+
+#xx{
+    color: rgb(0, 216, 255);
+    font-weight: bold;
+}

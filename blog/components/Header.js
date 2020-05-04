@@ -6,7 +6,6 @@ import Router from "next/router";
 import Link from "next/link"
 import axios from "axios";
 import servicePath from '../config/apiUrl'
-
 const Header = () => {
 
     const [newArray, setNewArray] = useState([])
@@ -20,10 +19,11 @@ const Header = () => {
     useEffect(() => { fetchData() }, []);
 
     const handleClick = (e) => {
+        console.log(e)
         if (e.key == 0) {
             Router.push("/")
         } else {
-            Router.push('/list?id=' + e.key)
+            Router.push('/list?id=' + e.key + "&type=" + e.item.props.name)
         }
 
     }
@@ -50,7 +50,7 @@ const Header = () => {
                         {
                             newArray.map(item => {
                                 return (
-                                    <Menu.Item key={item.id}>
+                                    <Menu.Item key={item.id} name={item.typeName}>
                                         {React.createElement(
                                             Icon[item.icon],
                                         )}

@@ -10,14 +10,13 @@ import Link from "next/link"
 import axios from "axios";
 import servicePath from '../config/apiUrl';
 
-
 import marked from "marked";
 import hljs from "highlight.js";
 import "highlight.js/styles/monokai-sublime.css"
 
 const MyList = (list) => {
+  const [typeName, setTypeName] = useState(list.url.query.type)
   const [mylist, setMylist] = useState(list.data)
-
   useEffect(() => {
     setMylist(list.data)
   })
@@ -50,7 +49,7 @@ const MyList = (list) => {
             <div className="bread-div">
               <Breadcrumb>
                 <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
-                <Breadcrumb.Item>视频列表</Breadcrumb.Item>
+                <Breadcrumb.Item>{typeName}</Breadcrumb.Item>
               </Breadcrumb>
             </div>
             <List
