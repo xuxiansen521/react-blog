@@ -55,6 +55,7 @@ function Login(props) {
                         placeholder="Enter your userName"
                         prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                         onChange={(e) => { setUsername(e.target.value) }}
+                        onPressEnter={checkLogin}
                     />
                     <br />
                     <br />
@@ -64,6 +65,7 @@ function Login(props) {
                         placeholder="Enter your password"
                         prefix={<KeyOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                         onChange={(e) => { setPassword(e.target.value) }}
+                        onPressEnter={checkLogin}
                     />
                     <br />
                     <br />

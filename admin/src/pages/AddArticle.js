@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import marked from "marked";
 import "../static/css/AddArticle.css";
 import { Row, Col, Input, Select, Button, DatePicker, message } from "antd";
 import axios from "axios";
 import servicePath from "../config/apiUrl";
+import { scrollBottom } from "../config/common"
 
 const { Option } = Select
 const { TextArea } = Input
@@ -20,6 +21,8 @@ function AddArticle(props) {
     // const [updateDate, setUpdateDate] = useState() //修改日志的日期
     const [typeInfo, setTypeInfo] = useState([]) // 文章类别信息
     const [selectedType, setSelectType] = useState() //选择的文章类别
+    //show-html dom
+    const showHtml = useRef(null);
 
     marked.setOptions({
         renderer: new marked.Renderer(),
@@ -35,7 +38,8 @@ function AddArticle(props) {
     const changeContent = (e) => {
         setArticleContent(e.target.value);
         let html = marked(e.target.value);
-        setMarkdownContent(html)
+        setMarkdownContent(html);
+        scrollBottom(showHtml.current);
     }
 
     const changeIntroduce = (e) => {
@@ -120,14 +124,14 @@ function AddArticle(props) {
 
     }
 
-    const getArticleById = (id)=>{
-        axios(servicePath.getArticleById+id,{
+    const getArticleById = (id) => {
+        axios(servicePath.getArticleById + id, {
             withCredentials: true,
             header: { 'Access-Control-Allow-Origin': '*' }
-        }).then(res=>{
+        }).then(res => {
             console.log(res)
             const info = res.data.data[0];
-            if(info){
+            if (info) {
                 setArticleTitle(info.title)
                 setArticleContent(info.article_content)
                 let content_html = marked(info.article_content)
@@ -137,7 +141,7 @@ function AddArticle(props) {
                 setIntroducehtml(introduce_html)
                 setShowDate(info.addTime)
                 setSelectType(info.typeid)
-            }else{
+            } else {
                 props.history.push('/index/list/')
 
             }
@@ -147,7 +151,7 @@ function AddArticle(props) {
     useEffect(() => {
         getTypeInfo();
         let temp = props.match.params.id;
-        if(temp){
+        if (temp) {
             setArticleId(temp)
             getArticleById(temp)
         }
@@ -188,6 +192,7 @@ function AddArticle(props) {
                         </Col>
                         <Col span={12}>
                             <div className='show-html'
+                                ref={showHtml}
                                 dangerouslySetInnerHTML={{ __html: markdownContent }}
                             ></div>
                         </Col>

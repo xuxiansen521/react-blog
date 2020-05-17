@@ -31,7 +31,7 @@ function AdminIndex(props) {
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
                 <div className="logo" >
-                    <Avatar size={collapsed ? 40 : 100} src={require("../static/image/logo.jpeg")} ></Avatar>
+                    <Avatar size={collapsed ? 40 : 100} src="http://127.0.0.1:7001/public/images/xx.jpeg" ></Avatar>
                 </div>
                 <Menu theme="dark" defaultSelectedKeys={['addArticle']} mode="inline" onClick={handleClickArticle}>
                     

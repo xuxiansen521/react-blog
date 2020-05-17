@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Head from 'next/head'
 import { Row, Col, Breadcrumb, Affix } from "antd";
 import { CalendarOutlined, FolderOutlined, FireOutlined } from "@ant-design/icons"
 import Header from '../components/Header';
 import Author from "../components/Author";
 import Advert from "../components/Advert";
 import Footer from "../components/Footer";
-import '../public/style/pages/detailed.css';
+import '../style/pages/detailed.css';
 import axios from 'axios';
 import Tocify from "../components/tocify.tsx"
 
@@ -15,6 +14,28 @@ import hljs from "highlight.js";
 import "highlight.js/styles/monokai-sublime.css"
 import servicePath from '../config/apiUrl'
 const Detailed = (props) => {
+	const [typeName, setTypeName] = useState()
+	const [addTime, setAddTime] = useState()
+	const [count, setCount] = useState()
+	const [title,setTitle] = useState()
+	const [article_content, setArticleContent] = useState();
+	const [nav,setNav] = useState();
+
+	const getArticleById = ()=>{
+		axios(servicePath.getArticleById + props.match.params.id).then(
+			(res) => {
+				setArticleContent(marked(res.data.data[0].article_content))
+				setTypeName(res.data.data[0].typeName)
+				setCount(res.data.data[0].view_count)
+				setAddTime(res.data.data[0].addTime)
+				setTitle(res.data.data[0].title)
+				setNav(tocify && tocify.render())
+			}
+		)
+	}
+	useEffect(()=>{
+		getArticleById();
+	},[])
 
 	const renderer = new marked.Renderer();
 
@@ -34,18 +55,12 @@ const Detailed = (props) => {
 
 	const tocify = new Tocify();
 	renderer.heading = (text, level, row) => {
-		const anchor = tocify.add(text, level)
-		return `<a id="${anchor}" href="${anchor}" class="anchor-fix"><h${level}>${text}</h${level}></a>`
+		const anchor = tocify.add(text, level);
+		return `<a id="${anchor}" href="#${anchor}" class="anchor-fix"><h${level}>${text}</h${level}></a>`
 	}
-
-	let html = marked(props.article_content);
-	
 
 	return (
 		<div>
-			<Head>
-				<title>Detailed</title>
-			</Head>
 			<Header></Header>
 			<Row className="comm-main" type="flex" justify="center">
 				<Col className="comm-left" xs={24} sm={24} md={16} lg={18} xl={14}>
@@ -53,23 +68,23 @@ const Detailed = (props) => {
 						<div className="bread-div">
 							<Breadcrumb>
 								<Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
-								<Breadcrumb.Item><a href={"/list?id=" + props.typeid}>{props.typeName}</a></Breadcrumb.Item>
-								<Breadcrumb.Item>{props.title}</Breadcrumb.Item>
+								<Breadcrumb.Item><a href={"/list/" + typeName}>{typeName}</a></Breadcrumb.Item>
+								<Breadcrumb.Item>{title}</Breadcrumb.Item>
 							</Breadcrumb>
 						</div>
 						<div>
 							<div className="detailed-title">
-								{props.title}
+								{title}
 							</div>
 
 							<div className="list-icon center">
-								<span><CalendarOutlined /> {props.addTime}</span>
-								<span><FolderOutlined /> {props.typeName}</span>
-								<span><FireOutlined /> {props.view_count}人</span>
+								<span><CalendarOutlined /> {addTime}</span>
+								<span><FolderOutlined /> {typeName}</span>
+								<span><FireOutlined /> {count}人</span>
 							</div>
 
 							<div className="detailed-content"
-								dangerouslySetInnerHTML={{ __html: html }}
+								dangerouslySetInnerHTML={{ __html: article_content }}
 							>
 							</div>
 						</div>
@@ -81,7 +96,8 @@ const Detailed = (props) => {
 					<Affix offsetTop={5}>
 						<div className="detailed-nav comm-box">
 							<div className="nav-title">文章目录</div>
-							{tocify && tocify.render()}
+							{/* {tocify && tocify.render()} */}
+							{nav}
 						</div>
 					</Affix>
 				</Col>
@@ -91,18 +107,5 @@ const Detailed = (props) => {
 	)
 }
 
-Detailed.getInitialProps = async (context) => {
-	let id = context.query.id
-	const promise = new Promise((resolve) => {
-
-		axios(servicePath.getArticleById + id).then(
-			(res) => {
-				resolve(res.data.data[0])
-			}
-		)
-	})
-
-	return await promise
-}
 
 export default Detailed
